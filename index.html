@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="css/main.css">
+    </head>
+    <body>
+        <h1>hi skyepodium</h1>
+
+        <div id="grid_wrapper">
+        </div>
+        <script>
+            const fodoList = [
+                {
+                    idx:0,
+                    name: '밥먹기',
+                    photo: 'https://cdn.pixabay.com/photo/2020/12/18/15/29/mountains-5842346_1280.jpg',
+                    color: '#fcd1d1'
+                },
+                {
+                    idx:1,                    
+                    name: '드래그 앤 드롭으로 순서를 바꿀 수도 있어요',
+                    photo: 'https://cdn.pixabay.com/photo/2020/12/18/15/29/mountains-5842346_1280.jpg',
+                    color: '#e36387'
+                },
+                {
+                    idx:2,                    
+                    name: '커피 마시기',
+                    photo: 'https://cdn.pixabay.com/photo/2020/12/18/15/29/mountains-5842346_1280.jpg',
+                    color: '#aacfcf'
+                },
+                {
+                    idx:3,                    
+                    name: '음악 듣기',
+                    photo: 'https://cdn.pixabay.com/photo/2020/12/18/15/29/mountains-5842346_1280.jpg',
+                    color: '#679b9b'
+                },
+            ]
+
+            const gridWrapper = document.querySelector("#grid_wrapper")
+            const gridBox = fodoList.map(item => {
+                // return `<div class="box" draggable="true" style="background-image: url('${item.photo}')";><div class="title">${item.name}</div></div>`
+                return `<div class="box" draggable="true" style="background-color: ${item.color}"; idx="${item.idx}"><div class="title">${item.name}</div></div>`
+            })
+            gridWrapper.innerHTML = gridBox.join("")
+
+            // const boxList = document.getElementsByClassName("box")
+            // for(let item of boxList) {
+            //     item.style.backgroundImage = 'url("https://cdn.pixabay.com/photo/2020/12/18/15/29/mountains-5842346_1280.jpg")';
+            // }
+const boxItems = document.getElementsByClassName("box")
+
+for(let item of boxItems) {
+    item.ondragstart = dragStart
+    item.ondragover = dragOver
+    item.ondrop = drop
+}            
+            
+let curIdx = null
+
+function dragStart (e) {
+    console.log('드래그 시작');
+    curIdx = Number(this.getAttribute("idx"))           
+    console.log('data', this.innerHTML)
+    e.dataTransfer.setData('data', this.innerHTML);
+    e.dataTransfer.dropEffect = 'copy';
+}
+
+function dragOver(e) {
+    e.preventDefault(); // 필수
+    // console.log('무언가 위에 올려져 있습니다');
+    e.dataTransfer.dropEffect = 'move';
+};
+function drop(e) {
+    console.log('e', e)
+    console.log('무언가 드롭되었습니다.');
+    console.log('this.innerHTML', this.innerHTML)
+
+    let droppedIdx = Number(this.getAttribute("idx"))           
+    if(curIdx === droppedIdx) {
+        alert('같은 데이터')
+    }
+    else {
+        let temp = fodoList[droppedIdx]
+        console.log('temp', temp)
+        fodoList[droppedIdx] = fodoList[curIdx]
+        console.log('temp', temp)
+        fodoList[curIdx] = temp
+        console.log('todoList', fodoList)
+        // todo.innerHTML = fodoList.map((todo) => {
+        //     return `<li class="item" draggable="true" idx=${todo.idx}>${todo.name}</li>`
+        // })
+        fodoList.forEach((val, idx) => val.idx = idx)
+        const gridBox = fodoList.map(item => {
+                // return `<div class="box" draggable="true" style="background-image: url('${item.photo}')";><div class="title">${item.name}</div></div>`
+                return `<div class="box" draggable="true" style="background-color: ${item.color}"; idx="${item.idx}"><div class="title">${item.name}</div></div>`
+            })
+        gridWrapper.innerHTML = gridBox.join("")
+
+        for(let item of boxItems) {
+            item.ondragstart = dragStart
+            item.ondragover = dragOver
+            item.ondrop = drop
+        }
+
+        curIdx = null                            
+    }
+    // alert(e.dataTransfer.getData('data'));
+}
+
+        </script>
+        <style>
+            #grid_wrapper {
+                width: calc(100% - 40px);
+                margin-left:auto;
+                margin-right:auto;
+            }
+            .box {
+                width: 100%;
+                height: 150px;
+                background: aqua;
+                margin-bottom: 10px;
+                border-radius: 2px;
+                width: 100%;
+                height: 50vw;
+                overflow: hidden;
+                background-position: 50%;
+                -ms-background-size: cover;
+                background-size: cover;                
+            }
+            .box .title {
+                color: white;
+                margin-top: 100px;
+                margin-left: 15px;
+                font-weight: 600;
+                font-size: 60px;
+            }
+        </style>
+        <ul id="todo">
+        </ul>
+    <!-- <script src="./js/todo.js"></script> -->
+    </body>
+</html>
